@@ -8,6 +8,7 @@ public abstract class Explorer {
 	public String getName() {
 		return name;
 	}
+	static int Point;
 	
     public abstract void search():
 }
