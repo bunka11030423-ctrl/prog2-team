@@ -1,17 +1,7 @@
 package explorer;
 
-public abstract class Explorer {
-    private String name;
-
-    public Explorer(String name) {
-	this.name=name;
-    }
-
-    
-    public String getName() {
-	return name;
-    }
-
+public abstract class Explorer {   
+	
     public abstract void search():
 }
     
