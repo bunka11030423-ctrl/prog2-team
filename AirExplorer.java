@@ -5,7 +5,7 @@ public abstract class AirExplorer extends Explorer{
 	 super(name);
 	}
 	public void searchAir() {
-	System.out.println(getName()+"は空中を探索した");
+	System.out.println(getName()+"は空を探索した");
     }
 }
     
