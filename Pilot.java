@@ -5,8 +5,9 @@ public class Pilot extends AirExplorer{
 	super(name);
 		public void rateup(){
 			System.out.println(this.getName()+"はレアの確率をアップさせた！");
+		    System.out.println(this.getName()"は宝を見つけた！");
+
 	System.out.println()   
 	    }
 			
-		System.out.println(this.getName()"は宝を見つけた！");
     }
