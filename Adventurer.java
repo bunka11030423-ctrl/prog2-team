@@ -1,11 +1,7 @@
-package LandExplorer;
-public class Adventurer extends LandExplorer{
-    Adventurer(String name){
-	super(name);
-    }
+package treasure.explorer;
 
-    public void rateup(){
-	System.out.println(this.getName()+"はレジェンダリの確率をアップさせた！");
-	System.out.println()   
-	    }
+public class Adventurer extends GroundExplorer {
+    public Adventurer() {
+        setName("冒険家");
+    }
 }
