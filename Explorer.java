@@ -1,16 +1,26 @@
-package explorer;
+package treasure.explorer;
 
-public abstract class Explorer {   
-	public Explorer(String name) {
-		this.name=name;
-	}
+import treasure.treasure.Treasure;
 
-	public String getName() {
-		return name;
-	}
-	static int Point;
-	
-    public abstract void search():
+public abstract class Explorer {
+    private String name;
+    private int score = 0;
+
+    public Explorer() {
+    }
+
+    public Explorer(String name) {
+        this.name = name;
+    }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getScore() { return score; }
+
+    public void addScore(int points) {
+        this.score += points;
+    }
+
+    public abstract void explore(Treasure treasure);
 }
-    
-    
