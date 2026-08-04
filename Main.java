@@ -1,26 +1,77 @@
-package tresure;
+package treasure;
 
-import explorer.*;
-import tresure.*;
+import treasure.explorer.*;
+import treasure.treasure.*;
 
 public class Main{
-    System.out.println("1：冒険者");
+    public static void main(String[] args){
+	
+    System.out.println("1：冒険家");
     System.out.println("2：考古学者");
     System.out.println("3：ドローン操縦者");
     System.out.println("4：パイロット");
     System.out.print("キャラクターを選んでください:");
     int input = new java.util.Scanner(System.in).nextInt();
+    
+    Explorer player;
 
     if(input==1){
-	
+	player=new Adventurer();
     }
-    if(input==2){
+    else if(input==2){
+	player=new Archaeologist();
     }
-    if(input==3){
+    else if(input==3){
+	player=new DroneOperator();
     }
-    if(input==4){
+    else{
+	player=new Pilot();
     }
+
+    int max=5;
+    int goalScore=200;
     
+    System.out.println("キャラクター:"+player.getName());
+    System.out.println(max+"ターンまで");
+    System.out.println(max+"ターン以内に"+goalScore+"点以上獲得でクリア！");
+
+    for(int turn=1; turn<=max; turn++){
+	System.out.println(turn+"/"+max+"ターン");
+	System.out.print("探索開始！");
+
+    int searchCount=(player instanceof DroneOperator)?2:1;
+
+    for(int i=0;i<searchCount;i++){
+	if(searchCount==2){
+	    System.out.println((i+1)+"回目");
+	}
+
+    Treasure foundTreasure;
+    if(player instanceof Adventurer){
+	foundTreasure=Treasure.generateRandomTreasureForAdventurer();
+    }else{
+	foundTreasure=Treasure.generateRandomTreasure();
+    }
+
+    player.explore(foundTreasure);
+    }
+    System.out.println("現在の点数:"+player.getScore()+"点");
+    }
+    boolean isCleared=player.getScore()>=goalScore;
+
+    System.out.println("ゲーム終了");
+    System.out.println("最終得点:"+player.getScore()+"点");
+
+    if(isCleared){
+	System.out.println("ゲームクリア！！！");
+    }else{
+	System.out.println("ゲームオーバー");
+    }
+    }
+}
+    
+    
+
 
 
     
