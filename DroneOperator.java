@@ -1,6 +1,7 @@
 package treasure.explorer;
 
-public class int DroneOperator extends AirExplorer{
-    public DroneOperato(String name){
+public class DroneOperator extends AirExplorer {
+    public DroneOperator() {
+        setName("ドローン操縦士");
     }
 }
