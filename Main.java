@@ -14,7 +14,7 @@ public class Main{
 	boolean check=true;
 	int input = new java.util.Scanner(System.in).nextInt();
 	Explorer player;
-	if(input<1 && input>4){
+	if(input<1 || input>4){
 	    check = false;
 	}
 	if(input==1){
@@ -33,7 +33,7 @@ public class Main{
 	int max=5;
 	int goalScore=200;
 	
-	if(check=true){
+	if(check==true){
 	    System.out.println("キャラクター:"+player.getName());
 	    System.out.println(max+"ターンまで");
 	    System.out.println(max+"ターン以内に"+goalScore+"点以上獲得でクリア！");
@@ -71,7 +71,7 @@ public class Main{
 		System.out.println("ゲームオーバー");
 	    }
 	}
-	if(check=false){
+	if(check==false){
 	    System.out.println("不正な値です。ゲームをやり直してください。");
 	}
     }
