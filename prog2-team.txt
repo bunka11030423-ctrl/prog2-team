@@ -1,0 +1,472 @@
+/***************************************/
+/*プログラム内容*/
+探索者の役職を選択し、５ターン以内に合計200点以上のお宝を獲得する
+
+/*************************************/
+/*役割分担*/
+岩田朋美
+Main.java
+Pilot.java
+
+川口穂夏
+Adventurer.java
+
+斎藤文香
+DroneOperator.java
+
+髙橋美奈
+Archaeologist.java
+提出ファイル
+
+槇原佑奈
+Explorer.java
+GroundExplorer.java
+AirExplorer.java
+
+山崎結加
+CommonTreasure.java
+Legendary.java
+RareTreasure.java
+Treasure.java
+
+/**************************************/
+/*Main.java*/
+package treasure;
+
+import treasure.explorer.*;
+import treasure.treasure.*;
+
+public class Main{
+    public static void main(String[] args){
+	
+	System.out.println("1：冒険家");
+	System.out.println("2：考古学者");
+	System.out.println("3：ドローン操縦者");
+	System.out.println("4：パイロット");
+	System.out.print("キャラクターを選んでください:");
+	int input = new java.util.Scanner(System.in).nextInt();
+    
+	Explorer player;
+
+	if(input==1){
+	    player=new Adventurer();
+	}
+	else if(input==2){
+	    player=new Archaeologist();
+	}
+	else if(input==3){
+	    player=new DroneOperator();
+	}
+	else{
+	    player=new Pilot();
+	}
+
+	int max=5;
+	int goalScore=200;
+    
+	System.out.println("キャラクター:"+player.getName());
+	System.out.println(max+"ターンまで");
+	System.out.println(max+"ターン以内に"+goalScore+"点以上獲得でクリア！");
+
+	for(int turn=1; turn<=max; turn++){
+	    System.out.println(turn+"/"+max+"ターン");
+	    System.out.print("探索開始！");
+
+	    int searchCount=(player instanceof DroneOperator)?2:1;
+
+	    for(int i=0;i<searchCount;i++){
+		if(searchCount==2){
+		    System.out.println((i+1)+"回目");
+		}
+
+		Treasure foundTreasure;
+		if(player instanceof Adventurer){
+		    foundTreasure=Treasure.generateRandomTreasureForAdventurer();
+		}else{
+		    foundTreasure=Treasure.generateRandomTreasure();
+		}
+
+		player.explore(foundTreasure);
+	    }
+	    System.out.println("現在の点数:"+player.getScore()+"点");
+	}
+	boolean isCleared=player.getScore()>=goalScore;
+
+	System.out.println("ゲーム終了");
+	System.out.println("最終得点:"+player.getScore()+"点");
+
+	if(isCleared){
+	    System.out.println("ゲームクリア！！！");
+	}else{
+	    System.out.println("ゲームオーバー");
+	}
+    }
+}
+    
+/**************************************/
+/*Adventurer.java*/
+package treasure.explorer;
+
+public class Adventurer extends GroundExplorer {
+    public Adventurer() {
+        setName("冒険家");
+    }
+}
+
+/**************************************/
+/*Archaeologist.java*/
+package treasure.explorer;
+
+import treasure.treasure.Treasure;
+
+public class Archaeologist extends GroundExplorer {
+    public Archaeologist() {
+        setName("考古学者");
+    }
+
+    @Override
+    public void explore(Treasure treasure) {
+        System.out.println(getName() + "は地上から探索する");
+        
+        int bonusValue = (int)(treasure.getValue() * 1.5);
+        addScore(bonusValue);
+
+        System.out.println(treasure.getName() + "を発見！能力で点数アップ！ (" 
+                           + bonusValue + "点)");
+    }
+}
+
+/**************************************/
+/*DroneOperator.java*/
+package treasure.explorer;
+
+public class DroneOperator extends AirExplorer {
+    public DroneOperator() {
+        setName("ドローン操縦士");
+    }
+}
+
+/**************************************/
+/*Pilot.java*/
+package treasure.explorer;
+
+public class Pilot extends AirExplorer{
+    public Pilot(){
+	setName("パイロット");
+	setFailRate(0);
+    }
+}
+
+/**************************************/
+/*Explorer.java*/
+package treasure.explorer;
+
+import treasure.treasure.Treasure;
+
+public abstract class Explorer {
+    private String name;
+    private int score = 0;
+
+    public Explorer() {
+    }
+
+    public Explorer(String name) {
+        this.name = name;
+    }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getScore() { return score; }
+
+    public void addScore(int points) {
+        this.score += points;
+    }
+
+    public abstract void explore(Treasure treasure);
+}
+
+/**************************************/
+/*AirExplorer.java*/
+package treasure.explorer;
+
+import treasure.treasure.Treasure;
+
+public abstract class AirExplorer extends Explorer {
+    private int failRate = 20;
+
+    public AirExplorer() {
+    }
+
+    public void setFailRate(int failRate) {
+        this.failRate = failRate;
+    }
+
+    @Override
+    public void explore(Treasure treasure) {
+        int chance = new java.util.Random().nextInt(100);
+        if (chance < failRate) {
+            System.out.println(getName() + " は上空から探索したが何も見つからなかった！");
+            return;
+        }
+
+        System.out.println(getName() + " は上空から探索した！");
+        addScore(treasure.getValue());
+        System.out.println(treasure.getName() + "を見つけた！");
+    }
+}
+
+/**************************************/
+/*GroundExplorer.java*/
+package treasure.explorer;
+
+import treasure.treasure.Treasure;
+
+public abstract class GroundExplorer extends Explorer {
+    public GroundExplorer() {
+    }
+
+    @Override
+    public void explore(Treasure treasure) {
+        System.out.println(getName()+"は地上から探索している！");
+        addScore(treasure.getValue());
+        System.out.println(treasure.getName() + "を発見！");
+    }
+}
+
+/**************************************/
+/*Treasure.java*/
+package treasure.treasure;
+
+public abstract class Treasure {
+    private String name;
+    private int value;
+
+    public Treasure() {
+    }
+
+    public Treasure(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getValue() { return value; }
+    public void setValue(int value) { this.value = value; }
+
+    public static Treasure generateRandomTreasure() {
+        int percent = new java.util.Random().nextInt(100);
+
+        if (percent < 5) {
+            return new LegendaryTreasure("伝説の宝", 200);
+        } else if (percent < 30) {
+            return new RareTreasure("珍しい宝", 50);
+        } else {
+            return new CommonTreasure("普通の宝", 10);
+        }
+    }
+
+    public static Treasure generateRandomTreasureForAdventurer() {
+        int percent = new java.util.Random().nextInt(100);
+
+        if (percent < 15) {
+            return new LegendaryTreasure("伝説の宝", 200);
+        } else if (percent < 40) {
+            return new RareTreasure("珍しい宝", 50);
+        } else {
+            return new CommonTreasure("普通の宝", 10);
+        }
+    }
+}
+
+/**************************************/
+/*CommonTreasure.java*/
+package treasure.treasure;
+
+public class CommonTreasure extends Treasure {
+    public CommonTreasure(String name, int value) {
+        super(name, value);
+    }
+}
+
+/**************************************/
+/*LegendaryTreasure.java*/
+package treasure.treasure;
+
+public class LegendaryTreasure extends Treasure {
+    public LegendaryTreasure(String name, int value) {
+        super(name, value);
+    }
+}
+
+/**************************************/
+/*RareTreasure.java*/
+package treasure.treasure;
+
+public class RareTreasure extends Treasure {
+    public RareTreasure(String name, int value) {
+        super(name, value);
+    }
+}
+
+/***********************/
+/*実行結果*/
+javac treasure/Main.java treasure/explorer/*.java treasure/treasure/*.java
+java treasure.Main
+
+/***********************/
+/*冒険家を選んだ場合*/
+1：冒険家
+2：考古学者
+3：ドローン操縦者
+4：パイロット
+キャラクターを選んでください:1
+キャラクター:冒険家
+5ターンまで
+5ターン以内に200点以上獲得でクリア！
+1/5ターン
+探索開始！冒険家は地上から探索している！
+普通の宝を発見！
+現在の点数:10点
+2/5ターン
+探索開始！冒険家は地上から探索している！
+珍しい宝を発見！
+現在の点数:60点
+3/5ターン
+探索開始！冒険家は地上から探索している！
+珍しい宝を発見！
+現在の点数:110点
+4/5ターン
+探索開始！冒険家は地上から探索している！
+普通の宝を発見！
+現在の点数:120点
+5/5ターン
+探索開始！冒険家は地上から探索している！
+珍しい宝を発見！
+現在の点数:170点
+ゲーム終了
+最終得点:170点
+ゲームオーバー
+
+/***********************/
+/*考古学者を選んだ場合*/
+1：冒険家
+2：考古学者
+3：ドローン操縦者
+4：パイロット
+キャラクターを選んでください:2
+キャラクター:考古学者
+5ターンまで
+5ターン以内に200点以上獲得でクリア！
+1/5ターン
+探索開始！考古学者は地上から探索する
+珍しい宝を発見！能力で点数アップ！ (75点)
+現在の点数:75点
+2/5ターン
+探索開始！考古学者は地上から探索する
+珍しい宝を発見！能力で点数アップ！ (75点)
+現在の点数:150点
+3/5ターン
+探索開始！考古学者は地上から探索する
+普通の宝を発見！能力で点数アップ！ (15点)
+現在の点数:165点
+4/5ターン
+探索開始！考古学者は地上から探索する
+普通の宝を発見！能力で点数アップ！ (15点)
+現在の点数:180点
+5/5ターン
+探索開始！考古学者は地上から探索する
+珍しい宝を発見！能力で点数アップ！ (75点)
+現在の点数:255点
+ゲーム終了
+最終得点:255点
+ゲームクリア！！！
+
+/***********************/
+/*ドローン操縦者を選んだ場合*/
+1：冒険家
+2：考古学者
+3：ドローン操縦者
+4：パイロット
+キャラクターを選んでください:3
+キャラクター:ドローン操縦士
+5ターンまで
+5ターン以内に200点以上獲得でクリア！
+1/5ターン
+探索開始！1回目
+ドローン操縦士 は上空から探索した！
+普通の宝を見つけた！
+2回目
+ドローン操縦士 は上空から探索した！
+普通の宝を見つけた！
+現在の点数:20点
+2/5ターン
+探索開始！1回目
+ドローン操縦士 は上空から探索した！
+珍しい宝を見つけた！
+2回目
+ドローン操縦士 は上空から探索した！
+珍しい宝を見つけた！
+現在の点数:120点
+3/5ターン
+探索開始！1回目
+ドローン操縦士 は上空から探索した！
+普通の宝を見つけた！
+2回目
+ドローン操縦士 は上空から探索した！
+普通の宝を見つけた！
+現在の点数:140点
+4/5ターン
+探索開始！1回目
+ドローン操縦士 は上空から探索したが何も見つからなかった！
+2回目
+ドローン操縦士 は上空から探索した！
+珍しい宝を見つけた！
+現在の点数:190点
+5/5ターン
+探索開始！1回目
+ドローン操縦士 は上空から探索した！
+珍しい宝を見つけた！
+2回目
+ドローン操縦士 は上空から探索した！
+珍しい宝を見つけた！
+現在の点数:290点
+ゲーム終了
+最終得点:290点
+ゲームクリア！！！
+
+/***********************/
+/*パイロットを選んだ場合*/
+1：冒険家
+2：考古学者
+3：ドローン操縦者
+4：パイロット
+キャラクターを選んでください:4
+キャラクター:パイロット
+5ターンまで
+5ターン以内に200点以上獲得でクリア！
+1/5ターン
+探索開始！パイロット は上空から探索した！
+普通の宝を見つけた！
+現在の点数:10点
+2/5ターン
+探索開始！パイロット は上空から探索した！
+珍しい宝を見つけた！
+現在の点数:60点
+3/5ターン
+探索開始！パイロット は上空から探索した！
+普通の宝を見つけた！
+現在の点数:70点
+4/5ターン
+探索開始！パイロット は上空から探索した！
+珍しい宝を見つけた！
+現在の点数:120点
+5/5ターン
+探索開始！パイロット は上空から探索した！
+普通の宝を見つけた！
+現在の点数:130点
+ゲーム終了
+最終得点:130点
+ゲームオーバー
