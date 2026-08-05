@@ -11,10 +11,12 @@ public class Main{
     System.out.println("3：ドローン操縦者");
     System.out.println("4：パイロット");
     System.out.print("キャラクターを選んでください:");
+	boolean check=true;
     int input = new java.util.Scanner(System.in).nextInt();
-    
     Explorer player;
-
+    if(input<1 && input>4){
+		check = false;
+	}
     if(input==1){
 	player=new Adventurer();
     }
