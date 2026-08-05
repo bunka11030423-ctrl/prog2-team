@@ -132,7 +132,6 @@ public class Archaeologist extends GroundExplorer {
         setName("考古学者");
     }
 
-    @Override
     public void explore(Treasure treasure) {
         System.out.println(getName() + "は地上から探索する");
         
@@ -210,7 +209,6 @@ public abstract class AirExplorer extends Explorer {
         this.failRate = failRate;
     }
 
-    @Override
     public void explore(Treasure treasure) {
         int chance = new java.util.Random().nextInt(100);
         if (chance < failRate) {
@@ -234,7 +232,6 @@ public abstract class GroundExplorer extends Explorer {
     public GroundExplorer() {
     }
 
-    @Override
     public void explore(Treasure treasure) {
         System.out.println(getName()+"は地上から探索している！");
         addScore(treasure.getValue());
